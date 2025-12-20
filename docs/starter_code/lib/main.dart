@@ -25,7 +25,7 @@ class _CustomerCenterAppState extends State<CustomerCenterApp> {
     // [Step 1] Generator 설정
     final generator = GoogleGenerativeAiContentGenerator(
       apiKey: const String.fromEnvironment('GOOGLE_API_KEY'),
-      modelName: 'models/gemini-1.5-flash',
+      modelName: 'models/gemini-3-flash-preview',
       catalog: customerCenterCatalog,
       systemInstruction: '당신은 고객센터 상담원입니다. 질문에 친절하게 답해주세요.',
     );
