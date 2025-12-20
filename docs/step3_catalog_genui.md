@@ -7,11 +7,10 @@
 
 ```dart
 final faqCardItem = CatalogItem(
-  name: 'faq_card', 
+  name: 'faq_card',
   dataSchema: Schema.object(
     description: '질문과 답변 카드를 보여줍니다.',
     properties: {
-      // A2uiSchemas.stringReference를 사용하면 AI가 데이터를 유연하게 보낼 수 있습니다.
       'question': A2uiSchemas.stringReference(description: '질문 내용'),
       'answer': A2uiSchemas.stringReference(description: '답변 내용'),
     },
@@ -19,21 +18,25 @@ final faqCardItem = CatalogItem(
   ),
   widgetBuilder: (CatalogItemContext context) {
     final data = context.data as Map<String, dynamic>;
-    
-    // [중요] subscribeToString을 통해 실시간 데이터 변경을 구독합니다.
-    final questionNotifier = context.dataContext.subscribeToString(data['question']);
-    final answerNotifier = context.dataContext.subscribeToString(data['answer']);
-    
     return FaqCard(
-      questionNotifier: questionNotifier,
-      answerNotifier: answerNotifier,
+      questionNotifier: context.dataContext.subscribeToString(data['question']),
+      answerNotifier: context.dataContext.subscribeToString(data['answer']),
+      onTap: () {
+        context.dispatchEvent(
+          UserActionEvent(
+            sourceComponentId: context.id,
+            name: 'notHelpful',
+            context: {'question': data['question']},
+          ),
+        );
+      },
     );
   },
 );
 ```
 
 ### 📍 카테고리 그리드 (`category_grid`)
-여러 개의 카테고리 목록을 보여주는 스키마입니다.
+여러 개의 카테고리 목록을 보여주는 스키마입니다. 아이콘 이름을 실제 Flutter `IconData`로 매핑하는 로직이 포함됩니다.
 
 ```dart
 final categoryGridItem = CatalogItem(
@@ -47,7 +50,9 @@ final categoryGridItem = CatalogItem(
           properties: {
             'id': Schema.string(),
             'label': Schema.string(),
-            'iconName': Schema.string(description: '아이콘 이름 (info, help 등)'),
+            'iconName': Schema.string(
+              description: '아이콘 이름 (info, help, payment, person, settings)',
+            ),
           },
           required: ['id', 'label', 'iconName'],
         ),
@@ -60,17 +65,34 @@ final categoryGridItem = CatalogItem(
     final categoriesData = data['categories'] as List<dynamic>? ?? [];
 
     final categories = categoriesData.map((c) {
+      final iconName = c['iconName'] as String;
+      IconData icon;
+      // AI가 보내주는 문자열 이름을 실제 아이콘 객체로 변환합니다.
+      switch (iconName) {
+        case 'info': icon = Icons.info; break;
+        case 'help': icon = Icons.help; break;
+        case 'payment': icon = Icons.payment; break;
+        case 'person': icon = Icons.person; break;
+        case 'settings': icon = Icons.settings; break;
+        default: icon = Icons.help_outline;
+      }
       return CategoryItemData(
         id: c['id'] as String,
         label: c['label'] as String,
-        icon: Icons.help_outline, // 실습에서는 고정 아이콘 혹은 간단한 switch문 사용
+        icon: icon,
       );
     }).toList();
 
     return CategoryGrid(
       categories: categories,
       onCategorySelected: (id) {
-        context.dispatchEvent(UserActionEvent(name: 'categorySelected', context: {'categoryId': id}));
+        context.dispatchEvent(
+          UserActionEvent(
+            sourceComponentId: context.id,
+            name: 'categorySelected',
+            context: {'categoryId': id},
+          ),
+        );
       },
     );
   },
@@ -87,17 +109,30 @@ final inquiryStatusCardItem = CatalogItem(
     properties: {
       'title': A2uiSchemas.stringReference(description: '제목'),
       'status': A2uiSchemas.stringReference(description: '상태 텍스트'),
-      'statusType': Schema.string(description: 'pending, resolved 등'),
+      'date': Schema.string(description: '문의 일자 (예: 2024-12-20)'),
+      'statusType': Schema.string(
+        description: '상태 타입: pending, resolved, inProgress',
+      ),
     },
-    required: ['title', 'status'],
+    required: ['title', 'status', 'date'],
   ),
   widgetBuilder: (CatalogItemContext context) {
     final data = context.data as Map<String, dynamic>;
+    final statusType = data['statusType'] as String?;
     
+    // 상태 타입에 따라 색상을 결정합니다.
+    Color statusColor;
+    switch (statusType) {
+      case 'resolved': statusColor = Colors.green; break;
+      case 'inProgress': statusColor = Colors.orange; break;
+      default: statusColor = Colors.blue;
+    }
+
     return InquiryStatusCard(
       titleNotifier: context.dataContext.subscribeToString(data['title']),
       statusNotifier: context.dataContext.subscribeToString(data['status']),
-      statusColor: data['statusType'] == 'resolved' ? Colors.green : Colors.orange,
+      date: data['date'] ?? '',
+      statusColor: statusColor,
     );
   },
 );

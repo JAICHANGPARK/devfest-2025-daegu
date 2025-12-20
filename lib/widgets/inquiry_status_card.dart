@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class InquiryStatusCard extends StatelessWidget {
-  final String title;
-  final String status;
+  final ValueNotifier<String?> titleNotifier;
+  final ValueNotifier<String?> statusNotifier;
   final String date;
   final Color statusColor;
 
   const InquiryStatusCard({
     super.key,
-    required this.title,
-    required this.status,
+    required this.titleNotifier,
+    required this.statusNotifier,
     required this.date,
     this.statusColor = Colors.blue,
   });
@@ -26,12 +26,17 @@ class InquiryStatusCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                ValueListenableBuilder<String?>(
+                  valueListenable: titleNotifier,
+                  builder: (context, title, _) {
+                    return Text(
+                      title ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    );
+                  },
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -42,13 +47,18 @@ class InquiryStatusCard extends StatelessWidget {
                     color: statusColor.withAlpha(25),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      color: statusColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: ValueListenableBuilder<String?>(
+                    valueListenable: statusNotifier,
+                    builder: (context, status, _) {
+                      return Text(
+                        status ?? '',
+                        style: TextStyle(
+                          color: statusColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],

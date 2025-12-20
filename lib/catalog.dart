@@ -40,16 +40,16 @@ final faqCardItem = CatalogItem(
   dataSchema: Schema.object(
     description: 'Displays a question and answer card.',
     properties: {
-      'question': Schema.string(description: 'The question'),
-      'answer': Schema.string(description: 'The answer'),
+      'question': A2uiSchemas.stringReference(description: 'The question'),
+      'answer': A2uiSchemas.stringReference(description: 'The answer'),
     },
     required: ['question', 'answer'],
   ),
   widgetBuilder: (CatalogItemContext context) {
     final data = context.data as Map<String, dynamic>;
     return FaqCard(
-      question: data['question'] ?? '',
-      answer: data['answer'] ?? '',
+      questionNotifier: context.dataContext.subscribeToString(data['question']),
+      answerNotifier: context.dataContext.subscribeToString(data['answer']),
       onTap: () {
         context.dispatchEvent(
           UserActionEvent(
@@ -137,8 +137,8 @@ final inquiryStatusCardItem = CatalogItem(
   dataSchema: Schema.object(
     description: 'Displays the status of an inquiry.',
     properties: {
-      'title': Schema.string(),
-      'status': Schema.string(),
+      'title': A2uiSchemas.stringReference(description: 'The title'),
+      'status': A2uiSchemas.stringReference(description: 'The status'),
       'date': Schema.string(),
       'statusType': Schema.string(
         description: 'Type of status: pending, resolved, inProgress',
@@ -162,8 +162,8 @@ final inquiryStatusCardItem = CatalogItem(
     }
 
     return InquiryStatusCard(
-      title: data['title'] ?? '',
-      status: data['status'] ?? '',
+      titleNotifier: context.dataContext.subscribeToString(data['title']),
+      statusNotifier: context.dataContext.subscribeToString(data['status']),
       date: data['date'] ?? '',
       statusColor: statusColor,
     );
