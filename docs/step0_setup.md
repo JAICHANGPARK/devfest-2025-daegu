@@ -17,8 +17,8 @@ flutter pub get
 ## 3. 시작 코드 준비
 실습을 위해 미리 준비된 **시작 코드**를 프로젝트의 `lib` 폴더에 복사하거나 참고하여 작성합니다.
 
-*   [docs/starter_code/lib/](./starter_code/lib/) 폴더의 파일들을 자신의 프로젝트 `lib/` 폴더에 덮어쓰기 하세요.
-*   혹은 하나의 파일로 실습하고 싶다면 [main_all_in_one.dart](./starter_code/main_all_in_one.dart)의 내용을 `lib/main.dart`에 붙여넣으세요.
+*   [docs/starter_code/lib/](./starter_code/lib/) 폴더의 파일들(상태 관리, 모델, 유틸리티 등)을 자신의 프로젝트 `lib/` 폴더에 덮어쓰기 하세요.
+*   혹은 하나의 파일로 실습하고 싶다면 [main_all_in_one.dart](./starter_code/main_all_in_one.dart)의 내용을 `lib/main.dart`에 붙여넣고, **`lib/utils.dart`** 파일을 별도로 생성하여 준비하세요.
 
 ## 4. Gemini API 키 설정
 보안을 위해 API 키는 코드에 직접 하드코딩하지 않고 환경 변수를 통해 전달합니다.
