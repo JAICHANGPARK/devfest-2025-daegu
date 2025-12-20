@@ -22,7 +22,7 @@ class _CustomerCenterAppState extends State<CustomerCenterApp> {
     // [Step 4] 시스템 프롬프트 수정
     final generator = GoogleGenerativeAiContentGenerator(
       apiKey: const String.fromEnvironment('GOOGLE_API_KEY'),
-      modelName: 'models/gemini-1.5-flash',
+      modelName: 'models/gemini-3-flash-preview',
       // [Step 3] 카탈로그 아이템 등록
       catalog: Catalog([CoreCatalogItems.text, CoreCatalogItems.column]),
       systemInstruction: '당신은 고객센터 상담원입니다.',
