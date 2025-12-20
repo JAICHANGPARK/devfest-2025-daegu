@@ -47,27 +47,32 @@ class _CustomerCenterAppState extends State<CustomerCenterApp> {
               valueListenable: _conversation.conversation,
               builder: (context, messages, _) {
                 return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 20,
+                  ),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
+
                     if (message is AiUiMessage) {
-                      return GenUiSurface(
-                        host: _conversation.host,
-                        surfaceId: message.surfaceId,
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: GenUiSurface(
+                          host: _conversation.host,
+                          surfaceId: message.surfaceId,
+                        ),
                       );
                     }
-                    if (message is UserMessage) {
-                      return ListTile(
-                        leading: const Icon(Icons.person),
-                        title: Text(message.text),
-                      );
-                    }
+
                     if (message is AiTextMessage) {
-                      return ListTile(
-                        leading: const Icon(Icons.support_agent),
-                        title: Text(message.text),
-                      );
+                      return _buildAiMessage(context, message.text);
                     }
+
+                    if (message is UserMessage) {
+                      return _buildUserMessage(context, message.text);
+                    }
+
                     return const SizedBox.shrink();
                   },
                 );
@@ -83,6 +88,16 @@ class _CustomerCenterAppState extends State<CustomerCenterApp> {
       ),
     );
   }
+}
+
+Widget _buildAiMessage(BuildContext context, String text) {
+  // TODO: Step 1에서 구현
+  return ListTile(leading: const Icon(Icons.support_agent), title: Text(text));
+}
+
+Widget _buildUserMessage(BuildContext context, String text) {
+  // TODO: Step 1에서 구현
+  return ListTile(leading: const Icon(Icons.person), title: Text(text));
 }
 
 // [Step 2] 여기에 커스텀 위젯(FaqCard 등)을 추가하세요.

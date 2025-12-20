@@ -162,13 +162,7 @@ final inquiryStatusCardItem = CatalogItem(
 // 1. AI가 어떤 도구를 쓸지 알려주는 곳
 final generator = GoogleGenerativeAiContentGenerator(
   // ...
-  catalog: Catalog([
-    CoreCatalogItems.text,
-    CoreCatalogItems.column,
-    faqCardItem,           // 👈 추가
-    categoryGridItem,      // 👈 추가
-    inquiryStatusCardItem, // 👈 추가
-  ]),
+  catalog: customerCenterCatalog, // 👈 앞서 정의한 카탈로그 사용
   // ...
 );
 
@@ -177,10 +171,12 @@ _conversation = GenUiConversation(
   contentGenerator: generator,
   a2uiMessageProcessor: A2uiMessageProcessor(
     catalogs: [
-      generator.catalog, // 👈 생성자가 가진 카탈로그를 그대로 사용하도록 수정!
+      customerCenterCatalog, // 👈 카탈로그 등록
       CoreCatalogItems.asCatalog(),
     ],
   ),
+  onTextResponse: (text) => print("AI Text: $text"),
+  onError: (error) => print("Error: ${error.error}"),
 );
 ```
 
