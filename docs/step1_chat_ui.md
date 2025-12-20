@@ -3,7 +3,7 @@
 이 단계에서는 `genui` 패키지를 사용하여 AI와 대화할 수 있는 화면을 구성합니다.
 
 ## 1. GenUI 라이브러리 이해하기
-`genui`는 LLM(대규모 언어 모델)의 응답에 따라 선언적으로 UI를 생성해주는 Flutter 패키지입니다.
+`genui`는 LLM(대규모 언어 모델)의 응답에 따라 선언적으로 UI를 생성해주는 Flutter 패키지입니다. 텍스트 응답을 아름답게 보여주기 위해 마크다운을 지원하는 `MarkdownWidget`(`lib/utils.dart`)을 활용합니다.
 
 ## 2. ChatScreen 구성 및 데이터 흐름
 `genui` 패키지는 LLM과의 대화를 관리하는 `GenUiConversation`과 UI 메시지를 해석하는 `A2uiMessageProcessor`를 중심으로 동작합니다.
