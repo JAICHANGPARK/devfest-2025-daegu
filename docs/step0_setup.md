@@ -14,7 +14,13 @@
 flutter pub get
 ```
 
-## 3. Gemini API 키 설정
+## 3. 시작 코드 준비
+실습을 위해 미리 준비된 **시작 코드**를 프로젝트의 `lib` 폴더에 복사하거나 참고하여 작성합니다.
+
+*   [docs/starter_code/lib/](./starter_code/lib/) 폴더의 파일들을 자신의 프로젝트 `lib/` 폴더에 덮어쓰기 하세요.
+*   혹은 하나의 파일로 실습하고 싶다면 [main_all_in_one.dart](./starter_code/main_all_in_one.dart)의 내용을 `lib/main.dart`에 붙여넣으세요.
+
+## 4. Gemini API 키 설정
 보안을 위해 API 키는 코드에 직접 하드코딩하지 않고 환경 변수를 통해 전달합니다.
 
 터미널이나 IDE의 실행 설정(Run Configuration)에서 다음과 같이 `--dart-define` 옵션을 사용합니다.

@@ -2,13 +2,12 @@
 
 이 단계에서는 만든 위젯들을 AI(Gemini)가 인식할 수 있도록 `Catalog`에 등록하는 과정을 배웁니다.
 
-## 1. CatalogItem 정의 (`lib/catalog.dart`)
-각 위젯마다 어떤 데이터(JSON)가 필요한지 정의하고, 위젯을 생성하는 함수를 작성합니다.
+## 1. CatalogItem 정의
+위젯마다 어떤 데이터(JSON)가 필요한지 정의하고, 위젯을 생성하는 함수를 작성합니다. 다음 코드를 복사하세요.
 
 ```dart
-// lib/catalog.dart 예시: faq_card 등록
 final faqCardItem = CatalogItem(
-  name: 'faq_card', // AI가 이 이름으로 호출합니다.
+  name: 'faq_card', 
   dataSchema: Schema.object(
     description: '질문과 답변 카드를 보여줍니다.',
     properties: {
@@ -27,22 +26,27 @@ final faqCardItem = CatalogItem(
 );
 ```
 
-## 2. 통합 카탈로그 생성
-등록한 항목들을 모아서 하나의 `Catalog` 객체로 만듭니다.
+## 2. 코드는 어디에 넣나요?
+
+*   **방법 A: [구조화된 코드](./starter_code/lib/) 사용 시**
+    *   `lib/catalog.dart` 파일 상단에 `faqCardItem` 정의를 추가하세요.
+*   **방법 B: [한 파일로 시작하기 (All-in-one)](./starter_code/main_all_in_one.dart) 사용 시**
+    *   `lib/main.dart` 파일의 **`// [Step 3] 여기에 CatalogItem 정의...`** 주석 아래에 붙여넣으세요.
+
+## 3. 카탈로그에 등록하기
+정의한 `faqCardItem`을 실제 AI가 사용하는 리스트에 추가해야 합니다.
+
+*   **방법 A**: `lib/catalog.dart`의 `customerCenterCatalog` 리스트 안에 `faqCardItem`을 추가합니다.
+*   **방법 B**: `lib/main.dart` 내 `initState`의 `Catalog([...])` 리스트 안에 `faqCardItem`을 추가합니다.
 
 ```dart
-final Catalog customerCenterCatalog = Catalog([
-  CoreCatalogItems.button, // 기본 버튼
-  CoreCatalogItems.column, // 레이아웃용
-  faqCardItem,
-  categoryGridItem,
-  inquiryStatusCardItem,
-], catalogId: 'customer_center_v1');
+// 예시
+catalog: Catalog([
+  CoreCatalogItems.text,
+  CoreCatalogItems.column,
+  faqCardItem, // 👈 추가!
+]),
 ```
 
-## 3. 핵심 포인트
-*   **Schema**: AI에게 위젯의 용도와 필드 타입을 설명하는 명세서입니다. 설명(description)을 상세히 적을수록 AI가 더 정확하게 위젯을 사용합니다.
-*   **Catalog ID**: 카탈로그의 버전을 관리할 때 사용합니다.
-
 ---
-이제 똑똑한 상담원을 만들 준비가 거의 다 되었습니다. 마지막 단계인 **[Step 4: 프롬프트 엔지니어링](./step4_prompt_engineering.md)**으로 가보시죠!
+AI에게 도구를 쥐어주었습니다! 이제 어떻게 사용해야 할지 알려줄 시간입니다. **[Step 4](./step4_prompt_engineering.md)**로 이동하세요.

@@ -3,28 +3,35 @@
 마지막 단계입니다! AI에게 "고객센터 상담원"이라는 페르소나를 부여하고, 우리가 만든 위젯들을 언제 어떻게 사용할지 가르쳐 줍니다.
 
 ## 1. 시스템 프롬프트 설계
-`lib/main.dart` 혹은 `lib/chat_screen.dart`에서 `systemPrompt`를 다음과 같이 설정해 봅니다.
+AI에게 "고객센터 상담원"이라는 페르소나를 부여합니다.
 
 ```text
 넌 DevFest 2025 앱의 친절한 고객센터 상담원이야.
 사용자의 질문에 따라 다음 위젯들을 활용해:
-- 인사할 때는 'category_grid'를 보여줘.
 - 자주 묻는 질문은 'faq_card'로 답해줘.
-- 문의 내역 조회 요청에는 'inquiry_status_card'를 사용해.
 텍스트로만 답하지 말고 대화 흐름에 맞는 UI를 적극적으로 생성해줘.
 ```
 
-## 2. 인터렉션 처리 (Event Handling)
+## 2. 코드는 어디에 넣나요?
+
+*   **방법 A: [구조화된 코드](./starter_code/lib/) 사용 시**
+    *   `lib/main.dart` 내 `GoogleGenerativeAiContentGenerator`의 `systemInstruction` 속성에 위 내용을 입력하세요.
+*   **방법 B: [한 파일로 시작하기 (All-in-one)](./starter_code/main_all_in_one.dart) 사용 시**
+    *   `lib/main.dart` 파일의 **`// [Step 4] 시스템 프롬프트 수정`** 주석 아래 `systemInstruction`을 수정하세요.
+
+## 3. 인터렉션 처리 (Event Handling)
 위젯 내에서 버튼 클릭 등의 이벤트가 발생했을 때 AI에게 다시 정보를 전달하는 방법입니다.
 
 ```dart
-// FaqCard 클릭 시 이벤트 발생 예시
-context.dispatchEvent(
-  UserActionEvent(
-    name: 'notHelpful',
-    context: {'question': data['question']},
-  ),
-);
+// FaqCard 클릭 시 이벤트 발생 예시 (Step 2의 FaqCard를 수정해 보세요)
+onTap: () {
+  context.dispatchEvent(
+    UserActionEvent(
+      name: 'notHelpful',
+      context: {'question': question},
+    ),
+  );
+},
 ```
 
 ## 3. 완성 및 테스트
