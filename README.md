@@ -9,7 +9,7 @@
 ## 🌟 프로젝트 주요 특징
 
 - **Generative UI (GenUI)**: 텍스트 응답을 넘어, AI가 앱의 위젯 구조를 직접 설계하고 렌더링합니다.
-- **Gemini 1.5/2.0 Integration**: Google의 강력한 LLM을 사용하여 상황에 맞는 지능적인 응답을 제공합니다.
+- **Gemini 3 Integration**: Google의 강력한 LLM을 사용하여 상황에 맞는 지능적인 응답을 제공합니다.
 - **Custom Widget Catalog**: `FaqCard`, `CategoryGrid`, `InquiryStatusCard` 등 고객센터 앱에 특화된 위젯들을 AI가 자유자재로 조합할 수 있도록 카탈로그화되어 있습니다.
 - **Interactive Experience**: AI가 생성한 UI를 통해 사용자와 상호작용하며 실시간으로 상태를 업데이트합니다.
 
@@ -35,7 +35,7 @@
 
 시작하기 전에 다음 환경이 준비되어 있어야 합니다.
 
-1. **Flutter SDK**: 최신 Stable 버전 권장 (v3.10.3 이상)
+1. **Flutter SDK**: 최신 Stable 버전 권장 (v3.38.0 이상)
 2. **Gemini API Key**: [Google AI Studio](https://aistudio.google.com/)에서 발급받은 API 키가 필요합니다.
 3. **IDE**: VS Code 또는 Android Studio (Flutter 플러그인 설치 필수)
 
