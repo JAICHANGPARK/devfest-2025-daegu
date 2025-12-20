@@ -2,7 +2,7 @@
 
 이 리포지토리는 **DevFest 2025 Daegu**의 **"Flutter와 Gemini로 구현하는 차세대 Generative UI(GenUI)"** 핸즈온 세션을 위한 실습 코드입니다.
 
-사용자의 요구사항에 맞춰 AI가 실시간으로 최적의 UI 컴포넌트를 생성하고, 최신 정보(Google Search)를 활용하여 응답하는 **AI 여행 큐레이터(AI Travel Curator)** 앱을 구축하는 과정을 담고 있습니다.
+사용자의 요구사항에 맞춰 AI가 실시간으로 최적의 UI 컴포넌트(FAQ 카드, 카데고리 그리드, 문의 상태 등)를 생성하여 응답하는 **고객센터 상담 앱(Customer Center App)**을 구축하는 과정을 담고 있습니다.
 
 ---
 
@@ -10,25 +10,24 @@
 
 - **Generative UI (GenUI)**: 텍스트 응답을 넘어, AI가 앱의 위젯 구조를 직접 설계하고 렌더링합니다.
 - **Gemini 1.5/2.0 Integration**: Google의 강력한 LLM을 사용하여 상황에 맞는 지능적인 응답을 제공합니다.
-- **Real-time Google Search**: AI가 상상해서 답하는 것이 아니라, 실제 구글 검색 결과를 바탕으로 최신 정보와 이미지 URL을 가져옵니다.
-- **Custom Widget Catalog**: `PlaceCard`, `TravelCarousel` 등 여행 앱에 특화된 위젯들을 AI가 자유자재로 조합할 수 있도록 카탈로그화되어 있습니다.
+- **Custom Widget Catalog**: `FaqCard`, `CategoryGrid`, `InquiryStatusCard` 등 고객센터 앱에 특화된 위젯들을 AI가 자유자재로 조합할 수 있도록 카탈로그화되어 있습니다.
+- **Interactive Experience**: AI가 생성한 UI를 통해 사용자와 상호작용하며 실시간으로 상태를 업데이트합니다.
 
 ---
 
-### 실행 방법
+## 🎓 코드랩 실습 단계 (Curriculum)
 
-1.  Flutter 프로젝트 설정이 완료되었는지 확인합니다.
-2.  다음 명령어를 통해 API 키를 환경 변수로 전달하며 앱을 실행합니다:
+본 실습은 단계별로 구성되어 있습니다. `docs` 폴더의 가이드를 따라 진행해 주세요.
 
-    ```bash
-    flutter run --dart-define=GENAI_API_KEY=YOUR_API_KEY
-    ```
+*   **[Step 0: 환경 설정 및 API 키 준비](docs/step0_setup.md)**: Flutter 개발 환경 확인 및 Gemini API 키 설정
+*   **[Step 1: 기본적인 채팅 인터페이스 구현](docs/step1_chat_ui.md)**: Gemini API 연동 및 텍스트 채팅 기능 완성
+*   **[Step 2: 고객센터 전용 커스텀 위젯 제작](docs/step2_custom_widgets.md)**: FAQ, 카테고리 그리드 등 UI 컴포넌트 구현
+*   **[Step 3: GenUI 카탈로그 등록 및 연동](docs/step3_catalog_genui.md)**: 작성한 위젯을 AI가 사용 가능하도록 카탈로그 등록
+*   **[Step 4: 시스템 프롬프트 최적화 및 완성](docs/step4_prompt_engineering.md)**: 상담원 페르소나 설정 및 시나리오 완성
+*   **[Step 5: 위젯 개선 및 고급 인터렉션](docs/step5_advanced_refinement.md)**: 사용자 경험 고도화 및 고급 활용법
 
-    또는 특정 플랫폼(예: macOS)에서 실행하려면:
-
-    ```bash
-    flutter run -d macos --dart-define=GENAI_API_KEY=YOUR_API_KEY
-    ```
+> [!TIP]
+> **[시작 코드 (Starter Code)](docs/index.md#시작-코드-starter-code)** 섹션에서 본인에게 맞는 시작 코드를 선택할 수 있습니다.
 
 ---
 
@@ -42,7 +41,7 @@
 
 ---
 
-## 🚀 시작하기
+## 🚀 실행 방법
 
 ### 1. 리포지토리 클론 및 의존성 설치
 ```bash
@@ -51,22 +50,16 @@ cd devfest-2025-daegu
 flutter pub get
 ```
 
-### 2. API 키 설정
-`lib/main.dart` 파일의 `apiKey` 부분에 본인의 Gemini API 키를 입력합니다.
-*(주의: 실제 서비스 배포 시에는 API 키를 환경 변수나 보안 스토리지에 관리해야 합니다.)*
+### 2. API 키 설정 및 실행
+다음 명령어를 통해 API 키를 환경 변수로 전달하며 앱을 실행합니다:
 
-```dart
-// lib/main.dart
-final generator = GoogleGenerativeAiContentGenerator(
-  apiKey: 'YOUR_GEMINI_API_KEY_HERE', 
-  modelName: 'models/gemini-2.0-flash', // 또는 최신 모델명
-  // ...
-);
+```bash
+flutter run --dart-define=GENAI_API_KEY=YOUR_API_KEY
 ```
 
-### 3. 앱 실행
+또는 특정 플랫폼(예: macOS)에서 실행하려면:
 ```bash
-flutter run
+flutter run -d macos --dart-define=GENAI_API_KEY=YOUR_API_KEY
 ```
 
 ---
@@ -74,21 +67,10 @@ flutter run
 ## 📂 프로젝트 구조
 
 - `lib/main.dart`: 앱의 엔트리 포인트이며, GenUI `Generator` 및 `Conversation` 객체를 설정합니다.
-- `lib/chat_screen.dart`: 사용자 인터페이스를 담당하며, AI의 텍스트와 UI 메시지를 렌더링합니다.
 - `lib/catalog.dart`: AI가 사용할 수 있는 위젯들의 명세(Schema)와 빌더를 정의합니다.
-- `lib/widgets/`: `PlaceCard`, `TravelCarousel`, `VerticalLayout` 등 실제 렌더링될 커스텀 위젯들이 포함되어 있습니다.
-- `lib/search_injector.dart`: Google Search 기능을 AI 도구(Tool)로 주입하는 로직이 들어있습니다.
-
----
-
-## 🎓 Hands-on 학습 목표
-
-이 세션을 통해 다음 내용을 학습합니다.
-
-1. **GenUI의 개념 이해**: 정적인 UI에서 동적인 AI 생성 UI로의 패러다임 변화를 이해합니다.
-2. **Catalog 시스템 활용**: AI에게 우리 앱의 UI 컴포넌트를 "가르치는" 방법을 배웁니다.
-3. **Tool Calling & Search**: 외부 API와 검색 엔진을 LLM에 연결하여 데이터 신뢰성을 높이는 기법을 익힙니다.
-4. **Interactive UI**: AI가 생성한 UI 내에서 발생하는 이벤트를 가로채고 다시 AI에게 피드백을 주는 상호작용 구조를 설계합니다.
+- `lib/chat_screen.dart`: 사용자 인터페이스를 담당하며, AI의 텍스트와 UI 메시지를 렌더링합니다.
+- `lib/widgets/`: `FaqCard`, `CategoryGrid` 등 실제 렌더링될 커스텀 위젯들이 포함되어 있습니다.
+- `docs/`: 단계별 실습 가이드 문서가 포함되어 있습니다.
 
 ---
 
