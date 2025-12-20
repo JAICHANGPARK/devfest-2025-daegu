@@ -3,7 +3,7 @@
 이 단계에서는 만든 위젯들을 AI(Gemini)가 인식할 수 있도록 `Catalog`에 등록하는 과정을 배웁니다.
 
 ## 1. CatalogItem 정의
-위젯마다 어떤 데이터(JSON)가 필요한지 정의하고, 위젯을 생성하는 함수를 작성합니다. 다음 코드를 복사하세요.
+위젯마다 어떤 데이터가 필요한지 정의합니다. 단순한 텍스트가 아닌 **'언제든 업데이트될 수 있는 참조형(Reference)'** 데이터 구조를 사용합니다.
 
 ```dart
 final faqCardItem = CatalogItem(
@@ -11,20 +11,104 @@ final faqCardItem = CatalogItem(
   dataSchema: Schema.object(
     description: '질문과 답변 카드를 보여줍니다.',
     properties: {
-      'question': Schema.string(description: '질문 내용'),
-      'answer': Schema.string(description: '답변 내용'),
+      // A2uiSchemas.stringReference를 사용하면 AI가 데이터를 유연하게 보낼 수 있습니다.
+      'question': A2uiSchemas.stringReference(description: '질문 내용'),
+      'answer': A2uiSchemas.stringReference(description: '답변 내용'),
     },
     required: ['question', 'answer'],
   ),
   widgetBuilder: (CatalogItemContext context) {
     final data = context.data as Map<String, dynamic>;
+    
+    // [중요] subscribeToString을 통해 실시간 데이터 변경을 구독합니다.
+    final questionNotifier = context.dataContext.subscribeToString(data['question']);
+    final answerNotifier = context.dataContext.subscribeToString(data['answer']);
+    
     return FaqCard(
-      question: data['question'] ?? '',
-      answer: data['answer'] ?? '',
+      questionNotifier: questionNotifier,
+      answerNotifier: answerNotifier,
     );
   },
 );
 ```
+
+### 📍 카테고리 그리드 (`category_grid`)
+여러 개의 카테고리 목록을 보여주는 스키마입니다.
+
+```dart
+final categoryGridItem = CatalogItem(
+  name: 'category_grid',
+  dataSchema: Schema.object(
+    description: '문의 카테고리 그리드를 표시합니다.',
+    properties: {
+      'categories': Schema.list(
+        description: '카테고리 목록',
+        items: Schema.object(
+          properties: {
+            'id': Schema.string(),
+            'label': Schema.string(),
+            'iconName': Schema.string(description: '아이콘 이름 (info, help 등)'),
+          },
+          required: ['id', 'label', 'iconName'],
+        ),
+      ),
+    },
+    required: ['categories'],
+  ),
+  widgetBuilder: (CatalogItemContext context) {
+    final data = context.data as Map<String, dynamic>;
+    final categoriesData = data['categories'] as List<dynamic>? ?? [];
+
+    final categories = categoriesData.map((c) {
+      return CategoryItemData(
+        id: c['id'] as String,
+        label: c['label'] as String,
+        icon: Icons.help_outline, // 실습에서는 고정 아이콘 혹은 간단한 switch문 사용
+      );
+    }).toList();
+
+    return CategoryGrid(
+      categories: categories,
+      onCategorySelected: (id) {
+        context.dispatchEvent(UserActionEvent(name: 'categorySelected', context: {'categoryId': id}));
+      },
+    );
+  },
+);
+```
+
+### 📍 문의 상태 카드 (`inquiry_status_card`)
+
+```dart
+final inquiryStatusCardItem = CatalogItem(
+  name: 'inquiry_status_card',
+  dataSchema: Schema.object(
+    description: '문의 상태를 표시합니다.',
+    properties: {
+      'title': A2uiSchemas.stringReference(description: '제목'),
+      'status': A2uiSchemas.stringReference(description: '상태 텍스트'),
+      'statusType': Schema.string(description: 'pending, resolved 등'),
+    },
+    required: ['title', 'status'],
+  ),
+  widgetBuilder: (CatalogItemContext context) {
+    final data = context.data as Map<String, dynamic>;
+    
+    return InquiryStatusCard(
+      titleNotifier: context.dataContext.subscribeToString(data['title']),
+      statusNotifier: context.dataContext.subscribeToString(data['status']),
+      statusColor: data['statusType'] == 'resolved' ? Colors.green : Colors.orange,
+    );
+  },
+);
+```
+
+## 2. A2UI 스키마가 무엇인가요?
+일반적인 `Schema.string()`은 고정된 문자열만 받을 수 있지만, `A2uiSchemas.stringReference`는:
+- **직접 입력된 문자열** (`literalString`)
+- **다른 대화 맥락의 값 참조**
+- **동적으로 변화하는 값**
+등을 모두 수용할 수 있는 GenUI의 진보된 데이터 명세 방식입니다.
 
 ## 2. 코드는 어디에 넣나요?
 

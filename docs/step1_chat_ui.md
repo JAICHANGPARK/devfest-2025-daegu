@@ -5,18 +5,23 @@
 ## 1. GenUI 라이브러리 이해하기
 `genui`는 LLM(대규모 언어 모델)의 응답에 따라 선언적으로 UI를 생성해주는 Flutter 패키지입니다.
 
-## 2. ChatScreen 구성 (lib/chat_screen.dart)
-이미 제공된 `chat_screen.dart` 파일의 주요 구조를 살펴봅니다. 핵심은 `GenUI` 위젯입니다.
+## 2. ChatScreen 구성 및 데이터 흐름
+`genui` 패키지는 LLM과의 대화를 관리하는 `GenUiConversation`과 UI 메시지를 해석하는 `A2uiMessageProcessor`를 중심으로 동작합니다.
 
 ```dart
-// lib/chat_screen.dart 핵심 구조 예시
-GenUI(
+// [Step 1] GenUiConversation 초기화 예시
+final generator = GoogleGenerativeAiContentGenerator(
   apiKey: const String.fromEnvironment('GOOGLE_API_KEY'),
-  catalog: customerCenterCatalog, // Step 3에서 완성할 예정입니다.
-  initialPrompt: '안녕하세요! 무엇을 도와드릴까요?',
-  systemPrompt: '당신은 유능한 고객센터 상담원입니다.',
-  // ... 생략
-)
+  modelName: 'models/gemini-3-flash-preview',
+  catalog: customerCenterCatalog,
+);
+
+final conversation = GenUiConversation(
+  contentGenerator: generator,
+  a2uiMessageProcessor: A2uiMessageProcessor(
+    catalogs: [customerCenterCatalog, CoreCatalogItems.asCatalog()],
+  ),
+);
 ```
 
 ## 3. 메시지 모델링
