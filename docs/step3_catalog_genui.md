@@ -115,21 +115,38 @@ final inquiryStatusCardItem = CatalogItem(
 *   **방법 A: [구조화된 코드](./starter_code/lib/) 사용 시**
     *   `lib/catalog.dart` 파일 상단에 `faqCardItem` 정의를 추가하세요.
 *   **방법 B: [한 파일로 시작하기 (All-in-one)](./starter_code/main_all_in_one.dart) 사용 시**
-    *   `lib/main.dart` 파일의 **`// [Step 3] 여기에 CatalogItem 정의...`** 주석 아래에 붙여넣으세요.
+    *   `lib/main.dart` 파일의 **`// [Step 3] 여기에 CatalogItem 정의...`** 주석 아래에 위에서 만든 `faqCardItem`, `categoryGridItem`, `inquiryStatusCardItem` 코드를 모두 붙여넣으세요.
 
 ## 3. 카탈로그에 등록하기
-정의한 `faqCardItem`을 실제 AI가 사용하는 리스트에 추가해야 합니다.
+정의한 `CatalogItem`들을 실제 AI가 사용하고 UI로 보여줄 리스트에 추가해야 합니다. **두 군데(Generator와 MessageProcessor)**를 수정해야 함에 주의하세요!
 
-*   **방법 A**: `lib/catalog.dart`의 `customerCenterCatalog` 리스트 안에 `faqCardItem`을 추가합니다.
-*   **방법 B**: `lib/main.dart` 내 `initState`의 `Catalog([...])` 리스트 안에 `faqCardItem`을 추가합니다.
+*   **방법 A**: `lib/catalog.dart`의 `customerCenterCatalog` 리스트 안에 항목들을 추가합니다.
+*   **방법 B (All-in-one)**: `lib/main.dart` 내 `initState`에서 다음 두 곳을 수정합니다.
 
 ```dart
-// 예시
-catalog: Catalog([
-  CoreCatalogItems.text,
-  CoreCatalogItems.column,
-  faqCardItem, // 👈 추가!
-]),
+// 1. AI가 어떤 도구를 쓸지 알려주는 곳
+final generator = GoogleGenerativeAiContentGenerator(
+  // ...
+  catalog: Catalog([
+    CoreCatalogItems.text,
+    CoreCatalogItems.column,
+    faqCardItem,           // 👈 추가
+    categoryGridItem,      // 👈 추가
+    inquiryStatusCardItem, // 👈 추가
+  ]),
+  // ...
+);
+
+// 2. AI가 호출한 위젯을 실제로 화면에 그리는 곳
+_conversation = GenUiConversation(
+  contentGenerator: generator,
+  a2uiMessageProcessor: A2uiMessageProcessor(
+    catalogs: [
+      generator.catalog, // 👈 생성자가 가진 카탈로그를 그대로 사용하도록 수정!
+      CoreCatalogItems.asCatalog(),
+    ],
+  ),
+);
 ```
 
 ---

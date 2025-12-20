@@ -31,7 +31,7 @@ class _CustomerCenterAppState extends State<CustomerCenterApp> {
     _conversation = GenUiConversation(
       contentGenerator: generator,
       a2uiMessageProcessor: A2uiMessageProcessor(
-        catalogs: [CoreCatalogItems.asCatalog()],
+        catalogs: [generator.catalog, CoreCatalogItems.asCatalog()],
       ),
     );
   }
