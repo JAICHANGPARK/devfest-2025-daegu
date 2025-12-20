@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genui/genui.dart';
 import 'package:genui_google_generative_ai/genui_google_generative_ai.dart';
-import 'package:devfest2025_daegu_test/utils.dart';
 
 void main() {
   runApp(const MaterialApp(home: CustomerCenterApp()));
