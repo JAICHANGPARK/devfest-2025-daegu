@@ -27,7 +27,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     final message = messages[index];
 
-                    // UI 메시지인 경우 GenUiSurface로 렌더링
                     if (message is AiUiMessage) {
                       return GenUiSurface(
                         host: widget.conversation.host,
@@ -35,11 +34,21 @@ class _ChatScreenState extends State<ChatScreen> {
                       );
                     }
 
-                    // 텍스트 메시지인 경우
-                    return ListTile(
-                      title: Text(message is UserMessage ? "나" : "AI"),
-                      subtitle: Text(message.toString()), // 단순 텍스트 출력
-                    );
+                    if (message is UserMessage) {
+                      return ListTile(
+                        leading: const Icon(Icons.person),
+                        title: Text(message.text),
+                      );
+                    }
+
+                    if (message is AiTextMessage) {
+                      return ListTile(
+                        leading: const Icon(Icons.support_agent),
+                        title: Text(message.text),
+                      );
+                    }
+
+                    return const SizedBox.shrink();
                   },
                 );
               },

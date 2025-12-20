@@ -56,7 +56,19 @@ class _CustomerCenterAppState extends State<CustomerCenterApp> {
                         surfaceId: message.surfaceId,
                       );
                     }
-                    return ListTile(title: Text(message.toString()));
+                    if (message is UserMessage) {
+                      return ListTile(
+                        leading: const Icon(Icons.person),
+                        title: Text(message.text),
+                      );
+                    }
+                    if (message is AiTextMessage) {
+                      return ListTile(
+                        leading: const Icon(Icons.support_agent),
+                        title: Text(message.text),
+                      );
+                    }
+                    return const SizedBox.shrink();
                   },
                 );
               },

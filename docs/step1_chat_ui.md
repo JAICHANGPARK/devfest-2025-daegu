@@ -35,26 +35,27 @@ class Message {
 }
 ```
 
-## 4. 실습 과제
-`lib/main.dart`에서 `ChatScreen`을 홈 화면으로 설정하고, API 키가 정상적으로 주입되는지 확인해 보세요.
-
-```dart
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GenUI Customer Center',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const ChatScreen(), // 채팅 화면을 시작 페이지로!
+// [Step 1] 메시지 렌더링 방식 예시
+ValueListenableBuilder<List<ChatMessage>>(
+  valueListenable: conversation.conversation,
+  builder: (context, messages, _) {
+    return ListView.builder(
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        final message = messages[index];
+        
+        if (message is AiUiMessage) {
+          return GenUiSurface(host: host, surfaceId: message.surfaceId);
+        }
+        
+        return ListTile(
+          leading: Icon(message is UserMessage ? Icons.person : Icons.support_agent),
+          title: Text(message is UserMessage ? (message.text ?? "") : (message as AiTextMessage).text),
+        );
+      },
     );
-  }
-}
+  },
+)
 ```
 
 ---
